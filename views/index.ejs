@@ -28,14 +28,14 @@
     <ul style="list-style:none;padding:0;">
       <% tasks.forEach(task => { %>
         <li style="background:#f9f9f9;margin-bottom:10px;padding:10px;border-radius:5px;display:flex;align-items:center;gap:10px;">
-          <form action="/tasks/<%= task._id %>?_method=PUT" method="POST" style="display:flex;gap:10px;flex:1;">
-            <input type="text" name="title" value="<%= task.title %>" style="flex:1;padding:6px;" />
-            <select name="priority" style="padding:6px;">
+          <form action="/tasks/<%= task._id %>?_method=PUT" method="POST" class="edit-task-form">
+            <input type="text" name="title" value="<%= task.title %>">
+            <select name="priority">
               <option value="low" <%= task.priority === 'low' ? 'selected' : '' %>>Low</option>
               <option value="high" <%= task.priority === 'high' ? 'selected' : '' %>>High</option>
               <option value="urgent" <%= task.priority === 'urgent' ? 'selected' : '' %>>Urgent</option>
             </select>
-            <button type="submit" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;">Save</button>
+            <button type="submit">Save</button>
           </form>
           <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST">
             <button type="submit" style="background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:5px;">Delete</button>
