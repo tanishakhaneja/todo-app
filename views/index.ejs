@@ -1,49 +1,44 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Todo List App</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="container">
     <h1>Todo List</h1>
-
     <% if (alert) { %>
-      <div style="background:#ffe0e0;padding:10px;margin-bottom:10px;border-radius:5px;text-align:center;">
-        <%= alert %>
-      </div>
+      <div class="alert"><%= alert %></div>
     <% } %>
-
-    <form action="/tasks" method="POST" style="margin-bottom:20px;display:flex;gap:10px;">
-      <input type="text" name="title" placeholder="Add new task..." required style="flex:1;padding:8px;" />
-      <select name="priority" style="padding:8px;">
+    <form action="/tasks" method="POST" class="add-task-form">
+      <input type="text" name="title" placeholder="Add new task..." required>
+      <select name="priority">
         <option value="low">Low</option>
         <option value="high">High</option>
         <option value="urgent">Urgent</option>
       </select>
-      <button type="submit" style="background:#007bff;color:#fff;border:none;padding:8px 16px;border-radius:5px;">Add</button>
+      <button type="submit">Add</button>
     </form>
-
-    <ul style="list-style:none;padding:0;">
+    <ul>
       <% tasks.forEach(task => { %>
-        <li style="background:#f9f9f9;margin-bottom:10px;padding:10px;border-radius:5px;display:flex;align-items:center;gap:10px;">
+        <li>
           <form action="/tasks/<%= task._id %>?_method=PUT" method="POST" class="edit-task-form">
-            <input type="text" name="title" value="<%= task.title %>">
-            <select name="priority">
-              <option value="low" <%= task.priority === 'low' ? 'selected' : '' %>>Low</option>
-              <option value="high" <%= task.priority === 'high' ? 'selected' : '' %>>High</option>
-              <option value="urgent" <%= task.priority === 'urgent' ? 'selected' : '' %>>Urgent</option>
+            <input type="text" name="title" value="<%= task.title %>" placeholder="Edit task..." required>
+            <select name="priority" aria-label="Task priority">
+              <option value="low"<% if (task.priority === 'low') { %> selected<% } %>>Low</option>
+              <option value="high"<% if (task.priority === 'high') { %> selected<% } %>>High</option>
+              <option value="urgent"<% if (task.priority === 'urgent') { %> selected<% } %>>Urgent</option>
             </select>
             <button type="submit">Save</button>
           </form>
           <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST">
-            <button type="submit" style="background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:5px;">Delete</button>
+            <button type="submit">Delete</button>
           </form>
         </li>
-      <% }); %>
+      <% }) %>
     </ul>
-    <footer style="text-align:center;margin-top:30px;color:#888;">
+    <footer>
       <p>© <%= new Date().getFullYear() %> Tanisha Khaneja</p>
     </footer>
   </div>

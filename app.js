@@ -7,7 +7,10 @@ const Task = require('./task')
 const app = express()
 const port = process.env.PORT || 3000
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: true }))
@@ -15,38 +18,42 @@ app.use(methodOverride('_method'))
 app.use(express.static('public'))
 
 app.use((req, res, next) => {
-  res.locals.alert = req.query.alert || null
+  res.locals.alert = null
   next()
 })
 
 app.get('/', async (req, res) => {
   const tasks = await Task.find({})
-  res.render('index', { tasks, alert: res.locals.alert })
+  res.render('index', { tasks, alert: null })
 })
 
 app.post('/tasks', async (req, res) => {
   const title = (req.body.title || '').trim()
   const priority = req.body.priority
   if (!title) {
-    return res.redirect('/?alert=Task title cannot be empty!')
+    const tasks = await Task.find({})
+    return res.render('index', { tasks, alert: 'Task title cannot be empty!' })
   }
   await Task.create({ title, priority })
-  res.redirect('/?alert=Task added successfully!')
+  res.redirect('/')
 })
 
 app.put('/tasks/:id', async (req, res) => {
   const title = (req.body.title || '').trim()
   const priority = req.body.priority
   if (!title) {
-    return res.redirect('/?alert=Task title cannot be empty!')
+    const tasks = await Task.find({})
+    return res.render('index', { tasks, alert: 'Task title cannot be empty!' })
   }
   await Task.findByIdAndUpdate(req.params.id, { title, priority })
-  res.redirect('/?alert=Task updated successfully!')
+  const tasks = await Task.find({})
+  res.render('index', { tasks, alert: 'Task updated successfully!' })
 })
 
 app.delete('/tasks/:id', async (req, res) => {
   await Task.findByIdAndDelete(req.params.id)
-  res.redirect('/?alert=Task deleted successfully!')
+  const tasks = await Task.find({})
+  res.render('index', { tasks, alert: 'Task deleted successfully!' })
 })
 
 app.listen(port, () => {
