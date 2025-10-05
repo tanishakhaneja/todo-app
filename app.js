@@ -7,20 +7,12 @@ const Task = require('./task')
 const app = express()
 const port = process.env.PORT || 3000
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
 
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
-
-app.use((req, res, next) => {
-  res.locals.alert = null
-  next()
-})
 
 app.get('/', async (req, res) => {
   const tasks = await Task.find({})
@@ -28,24 +20,25 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/tasks', async (req, res) => {
-  const title = (req.body.title || '').trim()
-  const priority = req.body.priority
+  const title = req.body.title ? req.body.title.trim() : ''
   if (!title) {
     const tasks = await Task.find({})
     return res.render('index', { tasks, alert: 'Task title cannot be empty!' })
   }
-  await Task.create({ title, priority })
+  await Task.create({ title, priority: req.body.priority })
   res.redirect('/')
 })
 
 app.put('/tasks/:id', async (req, res) => {
-  const title = (req.body.title || '').trim()
-  const priority = req.body.priority
+  const title = req.body.title ? req.body.title.trim() : ''
   if (!title) {
     const tasks = await Task.find({})
     return res.render('index', { tasks, alert: 'Task title cannot be empty!' })
   }
-  await Task.findByIdAndUpdate(req.params.id, { title, priority })
+  await Task.findByIdAndUpdate(req.params.id, { 
+    title, 
+    priority: req.body.priority 
+  })
   const tasks = await Task.find({})
   res.render('index', { tasks, alert: 'Task updated successfully!' })
 })

@@ -9,7 +9,7 @@
   <div class="container">
     <h1>Todo List</h1>
     <% if (alert) { %>
-      <div class="alert"><%= alert %></div>
+      <div class="alert<%= alert.includes('successfully') ? ' alert-success' : '' %>"><%= alert %></div>
     <% } %>
     <form action="/tasks" method="POST" class="add-task-form">
       <input type="text" name="title" placeholder="Add new task..." required>
@@ -23,9 +23,9 @@
     <ul>
       <% tasks.forEach(task => { %>
         <li>
-          <form action="/tasks/<%= task._id %>?_method=PUT" method="POST" class="edit-task-form">
-            <input type="text" name="title" value="<%= task.title %>" placeholder="Edit task..." required>
-            <select name="priority" aria-label="Task priority">
+          <form action="/tasks/<%= task._id %>?_method=PUT" method="POST">
+            <input type="text" name="title" value="<%= task.title %>" required>
+            <select name="priority">
               <option value="low"<% if (task.priority === 'low') { %> selected<% } %>>Low</option>
               <option value="high"<% if (task.priority === 'high') { %> selected<% } %>>High</option>
               <option value="urgent"<% if (task.priority === 'urgent') { %> selected<% } %>>Urgent</option>
