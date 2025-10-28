@@ -9,18 +9,25 @@
   <div class="container">
     <h1>Todo List</h1>
     <% if (alert) { %>
-      <div class="alert<%= alert.includes('successfully') ? ' alert-success' : '' %>"><%= alert %></div>
+      <div class="alert<%= alert.includes('successfully') ? ' alert-success' : '' %>">
+        <span><%= alert %></span>
+        <button type="button" aria-label="Close" onclick="this.parentElement.style.display='none'">×</button>
+      </div>
     <% } %>
-    <form action="/tasks" method="POST" class="add-task-form">
-      <input type="text" name="title" placeholder="Add new task..." required>
-      <select name="priority">
+    <form action="/tasks" method="POST" class="add-task-form" aria-label="Add task">
+      <input id="new-title" type="text" name="title" placeholder="Add new task..." required>
+      <select name="priority" aria-label="Priority">
         <option value="low">Low</option>
         <option value="high">High</option>
         <option value="urgent">Urgent</option>
       </select>
       <button type="submit">Add</button>
     </form>
+
     <ul>
+      <% if (!tasks.length) { %>
+        <li>No tasks yet — add your first one above.</li>
+      <% } %>
       <% tasks.forEach(task => { %>
         <li>
           <form action="/tasks/<%= task._id %>?_method=PUT" method="POST">
