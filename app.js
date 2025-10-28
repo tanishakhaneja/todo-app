@@ -21,7 +21,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
 
-// make alert available in templates via query string (simple flash)
 app.use((req, res, next) => {
   res.locals.alert = req.query.alert || null
   next()
