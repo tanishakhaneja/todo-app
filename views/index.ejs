@@ -9,13 +9,12 @@
   <div class="container">
     <h1>Todo List</h1>
     <% if (alert) { %>
-      <div class="alert<%= alert.includes('successfully') ? ' alert-success' : '' %>">
+      <div class="alert">
         <span><%= alert %></span>
-        <button type="button" aria-label="Close" onclick="this.parentElement.style.display='none'">×</button>
       </div>
     <% } %>
-    <form action="/tasks" method="POST" class="add-task-form" aria-label="Add task">
-      <input id="new-title" type="text" name="title" placeholder="Add new task.." required>
+    <form id="add-form" action="/tasks" method="POST" class="add-task-form" aria-label="Add task">
+      <input id="new-title" type="text" name="title" placeholder="Add new task..">
       <select name="priority" aria-label="Priority">
         <option value="low">Low</option>
         <option value="high">High</option>
@@ -29,8 +28,16 @@
         <li>No tasks yet — add your first one above.</li>
       <% } %>
       <% tasks.forEach(task => { %>
-        <li>
-          <form action="/tasks/<%= task._id %>?_method=PUT" method="POST">
+        <li id="task-<%= task._id %>" class="task-item">
+          <div class="task-display">
+            <span class="task-title"><%= task.title %></span>
+            <span class="task-priority <%= task.priority %>"><%= task.priority %></span>
+            <button type="button" class="edit-btn" onclick="editTask('<%= task._id %>')">Edit</button>
+            <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST" style="display:inline">
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+          <form class="task-edit-form" action="/tasks/<%= task._id %>?_method=PUT" method="POST" style="display:none">
             <input type="text" name="title" value="<%= task.title %>" required>
             <select name="priority">
               <option value="low"<% if (task.priority === 'low') { %> selected<% } %>>Low</option>
@@ -38,9 +45,7 @@
               <option value="urgent"<% if (task.priority === 'urgent') { %> selected<% } %>>Urgent</option>
             </select>
             <button type="submit">Save</button>
-          </form>
-          <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST">
-            <button type="submit">Delete</button>
+            <button type="button" onclick="cancelEdit('<%= task._id %>')">Cancel</button>
           </form>
         </li>
       <% }) %>
@@ -49,6 +54,52 @@
       <p>© <%= new Date().getFullYear() %> Tanisha Khaneja</p>
     </footer>
   </div>
+  <script>
+    const addForm = document.getElementById('add-form');
+    const titleInput = document.getElementById('new-title');
+    
+    if (addForm && titleInput) {
+      addForm.addEventListener('submit', function(e) {
+        if (!titleInput.value.trim()) {
+          e.preventDefault();
+          alert('Please enter a task title!');
+          titleInput.focus();
+        }
+      });
+    }
+    function editTask(id) {
+      const task = document.getElementById('task-' + id);
+      if (!task) return;
+      
+      const display = task.querySelector('.task-display');
+      const editForm = task.querySelector('.task-edit-form');
+      
+      display.style.display = 'none';
+      editForm.style.display = 'block';
+      editForm.querySelector('input').focus();
+    }
+    function cancelEdit(id) {
+      const task = document.getElementById('task-' + id);
+      if (!task) return;
+      
+      const display = task.querySelector('.task-display');
+      const editForm = task.querySelector('.task-edit-form');
+      
+      display.style.display = 'block';
+      editForm.style.display = 'none';
+    }
+    const editForms = document.querySelectorAll('.task-edit-form');
+    editForms.forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        const input = form.querySelector('input[name="title"]');
+        if (input && !input.value.trim()) {
+          e.preventDefault();
+          alert('Task title cannot be empty!');
+          input.focus();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
 

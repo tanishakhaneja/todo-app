@@ -80,6 +80,57 @@ li {
   gap: 10px;
 }
 
+.task-display {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.task-title {
+  flex: 1;
+  font-weight: 500;
+  color: #333;
+}
+
+.task-priority {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  background: #e9ecef;
+  color: #495057;
+}
+
+.task-display button {
+  margin-left: auto;
+}
+
+.edit-btn {
+  background: #28a745;
+}
+
+.edit-btn:hover {
+  background: #218838;
+}
+
+.task-display form {
+  margin: 0;
+  flex: 0;
+}
+
+.task-display form button {
+  background: #dc3545;
+}
+
+.task-display form button:hover {
+  background: #c82333;
+}
+
+.task-edit-form {
+  width: 100%;
+}
+
 footer {
   text-align: center;
   margin-top: 30px;
